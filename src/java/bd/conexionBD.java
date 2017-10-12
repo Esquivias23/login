@@ -29,7 +29,7 @@ public class conexionBD {
         //los que no cambien
         this.usrBD = "root";
         this.passBD = "n0m3l0";
-        this.urlBD = "jdbc:mysql://127.0.0.1:3306/logServlets";    
+        this.urlBD = "jdbc:mysql://127.0.0.1:3306/login";    
         this.driverClassName = "com.mysql.jdbc.Driver";
     }
     
