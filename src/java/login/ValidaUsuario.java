@@ -76,7 +76,7 @@ public class ValidaUsuario extends HttpServlet {
         
         conexionBD bd = new conexionBD();
         try {
-            conexionBD.conectar();
+            bd.conectar();
             ResultSet rsVal = conexionBD.consulta("call buscaUsuario('" + nombre + "');");            
 
         } catch (Exception xxD) {
@@ -110,7 +110,7 @@ public class ValidaUsuario extends HttpServlet {
     }
     public void guardaUsuario(String nombre, String password){
         
-        cDatos bd = new cDatos();
+        conexionBD bd = new conexionBD();
         try {
             bd.conectar();
             ResultSet rsVal = bd.consulta("call guardaUsuario('" + nombre + "', '"+password+"');");            
