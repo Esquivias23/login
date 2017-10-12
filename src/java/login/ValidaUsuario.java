@@ -24,12 +24,10 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "ValidaUsuario", urlPatterns = {"/index"})
 public class ValidaUsuario extends HttpServlet {
 
-    conexionBD BD = new conexionBD();
+    private String comprobar = "";
     String nombre;
     String password;
-
-    public void llama() {
-    }
+    
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -40,19 +38,15 @@ public class ValidaUsuario extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException {
 
         nombre = request.getParameter("NOMBRE");
         password = request.getParameter("Pass");
-        /* TODO output your page here. You may use following sample code. */
-        String nombre = request.getParameter("NombreUsuario"); //Nombre
-        //Variables que son recibidas en el formulario
-        String pass = request.getParameter("PassUsuario");//Contraseña
-        Boolean verificacion; //Booleano para indicar estado
+        
+        Boolean verificacion; 
 
-        BD.Conectar(); //LLamar a la conexion 
-        verificacion = BD.BuscarUsuario(nombre, pass);
+        verificacion = conexionBD.buscaUsuario(nombre);
 
         if (verificacion) //Verificar la informacion
         {
@@ -77,7 +71,18 @@ public class ValidaUsuario extends HttpServlet {
         }
 
     }
+    
+    public void buscaUsuario(String nombre){
+        
+        conexionBD bd = new conexionBD();
+        try {
+            conexionBD.conectar();
+            ResultSet rsVal = conexionBD.consulta("call buscaUsuario('" + nombre + "');");            
 
+        } catch (Exception xxD) {
+            comprobar = xxD.getMessage();
+        }
+    }
     /**
      * Handles the HTTP <code>POST</code> method.
      *
@@ -89,6 +94,29 @@ public class ValidaUsuario extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        nombre = request.getParameter("NOMBRE");
+        password = request.getParameter("Password");
 
+        guardaUsuario(nombre,password);
+        
+        res.setContentType("text/html");
+        PrintWriter out = new PrintWriter(res.getOutputStream());
+        out.println("<html>");
+        out.println("<head><title>Login</title></head>");
+        out.println("<body>");
+        out.println("<h1><center>Se ha registrado exitosamente al usuario: "+usuario+"</center></h1>");
+        out.println("</body></html>");
+        out.close();
+    }
+    public void guardaUsuario(String nombre, String password){
+        
+        cDatos bd = new cDatos();
+        try {
+            bd.conectar();
+            ResultSet rsVal = bd.consulta("call guardaUsuario('" + nombre + "', '"+password+"');");            
+
+        } catch (Exception xxD) {
+            comprobar = xxD.getMessage();
+        }
     }
 }
