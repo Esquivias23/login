@@ -12,38 +12,75 @@ import java.sql.Statement;
  * @author Yo
  */
 public class conexionBD {
-    Connection con = null; //Variables para la base de datos
-    Statement stm = null;
-    ResultSet r = null;
-    
-    public String Conectar() throws ClassNotFoundException, InstantiationException, IllegalAccessException
-    {
-        String mensaje; 
-        try
-            {  //Conexion a la base de datos
-                Class.forName("com.mysql.jdbc.Driver").newInstance();
-                con = DriverManager.getConnection("jdbc:mysql://localhost/LoginPractica", "root", "n0m3l0");
-                stm = con.createStatement(); //Declaracion y asignacion de valores para las variables
-                mensaje = "Conexión exitosa";
-            }catch (SQLException error){
-                mensaje = error.toString();
-            }
-        return mensaje;
+     private String usrBD;
+    private String passBD;
+    private String urlBD;
+    private String driverClassName;
+    private Connection conn = null;
+    private Statement estancia;
+ 
+    public cDatos(String usuarioBD, String passwordBD, String url, String driverClassName) {
+        this.usrBD = usuarioBD;
+        this.passBD = passwordBD;
+        this.urlBD = url;
+        this.driverClassName = driverClassName;
+    }
+    public cDatos() {
+        //los que no cambien
+        this.usrBD = "root";
+        this.passBD = "n0m3l0";
+        this.urlBD = "jdbc:mysql://127.0.0.1:3306/logServlets";    
+        this.driverClassName = "com.mysql.jdbc.Driver";
     }
     
-    public Boolean BuscarUsuario(String Nombre, String Pass ) throws SQLException  //Método que se utiliza para validar
-    {
-        Boolean VerExist = false;
-        r = stm.executeQuery("SELECT * FROM Usuarios;"); //Instruccion SQL
-        
-        while(r.next())
-        {
-            if(Nombre.equals(r.getString("NombreUsuario")) && Pass.equals(r.getString("PassUsuario")))  //Busca meiante el Nombre y Contraseña si existe el campo
-            {
-                VerExist = true;
-            }
+    //metodos para establecer los valores de conexion a la BD
+    public void setUsuarioBD(String usuario) throws SQLException {
+        this.usrBD = usuario;
+    }
+    public void setPassBD(String pass) {
+        this.passBD = pass;
+    } 
+    public void setUrlBD(String url) {
+        this.urlBD = url;
+    }
+    public void setConn(Connection conn) {
+        this.conn = conn;
+    }
+    public void setDriverClassName(String driverClassName) {
+        this.driverClassName = driverClassName;
+    }
+    
+    //Conexion a la BD
+    public void conectar() throws SQLException {
+        try {
+            Class.forName(this.driverClassName).newInstance();
+            this.conn = DriverManager.getConnection(this.urlBD, this.usrBD, this.passBD);
+ 
+        } catch (Exception err) {
+            System.out.println("Error " + err.getMessage());
         }
-        
-        return VerExist;  //Regresa un valor a la clase en la que sea llamado
+    }
+    
+    //Cerrar la conexion de BD
+    public void cierraConexion() throws SQLException {
+        this.conn.close();
+    }
+    
+    //Metodos para ejecutar sentencias SQL
+    public ResultSet consulta(String consulta) throws SQLException {
+        this.estancia = (Statement) conn.createStatement();
+        return this.estancia.executeQuery(consulta);
+    } 
+    public void actualizar(String actualiza) throws SQLException {
+        this.estancia = (Statement) conn.createStatement();
+        estancia.executeUpdate(actualiza);
+    } 
+    public ResultSet borrar(String borra) throws SQLException {
+        Statement st = (Statement) this.conn.createStatement();
+        return (ResultSet) st.executeQuery(borra);
+    } 
+    public int insertar(String inserta) throws SQLException {
+        Statement st = (Statement) this.conn.createStatement();
+        return st.executeUpdate(inserta);
     }
 }
