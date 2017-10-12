@@ -27,4 +27,27 @@ declare idU int;
 end; **
 delimiter ;
 
+delimiter ** 
+
+create procedure buscaUsuario(in neim nvarchar(15))
+begin
+declare msj nvarchar(20);
+declare existe int;
+	set msj = 'hola';
+	set existe = (select count(*) from Usuario where nombre = neim);
+    
+    if(existe >=1) then
+		set msj = 'Usuario existente';
+        
+	else
+		set msj = 'El usuario no existe';
+        
+	end if;
+    
+    select  msj as 'resultado';
+
+end; **
+
+delimiter ;
+
 select * from guardaUsuario;
