@@ -19,13 +19,13 @@ public class conexionBD {
     private Connection conn = null;
     private Statement estancia;
  
-    public cDatos(String usuarioBD, String passwordBD, String url, String driverClassName) {
+    public conexionBD(String usuarioBD, String passwordBD, String url, String driverClassName) {
         this.usrBD = usuarioBD;
         this.passBD = passwordBD;
         this.urlBD = url;
         this.driverClassName = driverClassName;
     }
-    public cDatos() {
+    public conexionBD() {
         //los que no cambien
         this.usrBD = "root";
         this.passBD = "n0m3l0";
